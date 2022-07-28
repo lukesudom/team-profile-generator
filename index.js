@@ -8,7 +8,7 @@ import Engineer from './lib/Engineer';
 
 import Intern from './lib/Intern';
 
-import fs from 'fs';
+import fs, { writeFile } from 'fs';
 
 import inquirer from 'inquirer';
 import { report } from 'process';
@@ -174,4 +174,42 @@ return inquirer.prompt ([
     }
 ])
 
-.then ()
+.then (employeeData => {
+
+
+    let {name, id, email, role, github, school, confirmAddEmployee } = employeeData;
+    let employee;
+
+    if (role === 'Engineer') {
+        employee = new Engineer (name,id,email,github);
+
+        console.log (employee)
+    } else if (role === 'Intern') {
+
+        console.log (employee);
+    }
+
+
+
+    teamArray.push(employee);
+
+    if (confirmAddEmployee) {
+
+        return addEmployee (teamArray);
+    } else {
+        return teamArray;
+    }
+});
+
+addManager()
+.then (addEmployee)
+.then (teamArray => {
+    return genHTML (teamArray);
+})
+
+.then (pageHTML => {
+    return writeFile (pageHTML);
+})
+.catch (err => {
+    console.log(err)
+});
